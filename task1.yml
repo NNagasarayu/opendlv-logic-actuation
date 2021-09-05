@@ -1,0 +1,44 @@
+# Copyright (C) 2020 Ola Benderius
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+version: '2'
+
+services:
+  cone-detection:
+    image: registry.git.chalmers.se/courses/tme290/2021/group6/opendlv-perception-cone-detection:v1.0
+    restart: on-failure
+    network_mode: host
+    ipc: "host"
+    volumes:
+      - /tmp:/tmp
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: "--cid=111 --name=img.argb --width=1280 --height=720"
+  
+  lane-detection:
+    image: registry.git.chalmers.se/courses/tme290/2021/group6/opendlv-perception-lane-detection:v1.0
+    restart: on-failure
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: "--cid=111 --freq=10 --dist-to-curve=100 --width=1280 --height=240"
+    
+  actuation:
+    image: registry.git.chalmers.se/courses/tme290/2021/group6/opendlv-logic-actuation:v0.1
+    restart: on-failure
+    network_mode: host
+    command: "--cid=111 --freq=10 --dist-to-curve=100"
+
